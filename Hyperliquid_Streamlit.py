@@ -53,7 +53,7 @@ Bins AS (
     SELECT
         log_volume,
         cumulative_percent,
-        NTILE(30000) OVER (ORDER BY cumulative_percent) AS bin
+        NTILE(2500) OVER (ORDER BY cumulative_percent) AS bin
     FROM CumulativePercentages
 ),
 RankedBins AS (
@@ -102,7 +102,7 @@ Bins AS (
     SELECT
         log_volume,
         cumulative_percent,
-        NTILE(30000) OVER (ORDER BY cumulative_percent) AS bin
+        NTILE(2500) OVER (ORDER BY cumulative_percent) AS bin
     FROM CumulativePercentages
 ),
 RankedBins AS (
