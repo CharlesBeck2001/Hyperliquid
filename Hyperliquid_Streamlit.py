@@ -10,7 +10,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import mysql.connector
 import streamlit as st
+import requests
 
+ip = requests.get('https://api.ipify.org').text
+st.write(f"Your Streamlit app's public IP is: {ip}")
 # Database connection
 conn = mysql.connector.connect(
     host='34.57.220.101',
