@@ -16,7 +16,8 @@ conn = mysql.connector.connect(
     host='34.57.220.101',
     user='charles',
     password='dessa0812HATH',
-    database='hyperfluid_data'
+    database='hyperfluid_data',
+    port=3306
 )
 
 # Create a cursor object to interact with the database
