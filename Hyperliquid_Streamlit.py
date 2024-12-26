@@ -16,11 +16,11 @@ ip = requests.get('https://api.ipify.org').text
 st.write(f"Your Streamlit app's public IP is: {ip}")
 # Database connection
 conn = mysql.connector.connect(
-    host='34.57.220.101',
-    user='charles',
-    password='dessa0812HATH',
-    database='hyperfluid_data',
-    port=3306
+    host = st.secrets["host"],
+    user = st.secrets["user"],
+    password = st.secrets["password"],
+    database = st.secrets["database"],
+    port = st.secrets["port"]
 )
 
 # Create a cursor object to interact with the database
