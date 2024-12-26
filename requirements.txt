@@ -1,4 +1,4 @@
 pandas
-mysql
+mysql-connector-python
 streamlit
 matplotlib
