@@ -226,6 +226,34 @@ ORDER BY COUNT(trade_id) DESC
 LIMIT 5;
 """
 
+@st.cache_data
+def fetch_cvf_data(asset):
+    if asset == 'Total':
+        cursor.execute(cvf_table_query_total)
+    else:
+        cursor.execute(cvf_table_query, (asset, asset))
+    results = cursor.fetchall()
+    df = pd.DataFrame(results, columns=["log_volume", "cumulative_percent"])
+    df = df[df['log_volume'] > 0]
+    df['asset'] = asset
+    return df
+
+@st.cache_data
+def fetch_cdf_data(asset):
+    if asset == 'Total':
+        cursor.execute(cdf_table_query_total)
+    else:
+        cursor.execute(cdf_table_query, (asset, asset))
+    results = cursor.fetchall()
+    df = pd.DataFrame(results, columns=["log_volume", "cumulative_percent"])
+    df = df[df['log_volume'] > 0]
+    df['asset'] = asset
+    df['log_volume'] = pd.to_numeric(df['log_volume'], errors='coerce')
+    df['cumulative_percent'] = pd.to_numeric(df['cumulative_percent'], errors='coerce')
+    df = df.dropna(subset=["log_volume", "cumulative_percent"])
+    return df
+
+
 cursor.execute(top_assets_query)
 default_assets = [row[0] for row in cursor.fetchall()] + ['Total']
 
@@ -243,52 +271,56 @@ selected_assets = st.multiselect(
 )
 
 if selected_assets:
-    cvf_data = []
-    cdf_data = []
+    #cvf_data = []
+    #cdf_data = []
+
+    cvf_data = [fetch_cvf_data(asset) for asset in selected_assets]
+    cdf_data = [fetch_cdf_data(asset) for asset in selected_assets]
     
-    for asset in selected_assets:
+    
+    #for asset in selected_assets:
         # Fetch CVF data
-        if asset == 'Total':
+        #if asset == 'Total':
             
-            cursor.execute(cvf_table_query_total)
-            cvf_results = cursor.fetchall()
-            df_cvf = pd.DataFrame(cvf_results, columns=["log_volume", "cumulative_percent"])
-            df_cvf = df_cvf[df_cvf['log_volume'] > 0]
-            df_cvf['asset'] = asset
-            cvf_data.append(df_cvf)
+         #   cursor.execute(cvf_table_query_total)
+         #   cvf_results = cursor.fetchall()
+         #   df_cvf = pd.DataFrame(cvf_results, columns=["log_volume", "cumulative_percent"])
+         #   df_cvf = df_cvf[df_cvf['log_volume'] > 0]
+         #   df_cvf['asset'] = asset
+         #   cvf_data.append(df_cvf)
 
             # Fetch CDF data
-            cursor.execute(cdf_table_query_total)
-            cdf_results = cursor.fetchall()
-            df_cdf = pd.DataFrame(cdf_results, columns=["log_volume", "cumulative_percent"])
-            df_cdf = df_cdf[df_cdf['log_volume'] > 0]
-            df_cdf['asset'] = asset
+         #   cursor.execute(cdf_table_query_total)
+         #   cdf_results = cursor.fetchall()
+         #   df_cdf = pd.DataFrame(cdf_results, columns=["log_volume", "cumulative_percent"])
+         #   df_cdf = df_cdf[df_cdf['log_volume'] > 0]
+         #   df_cdf['asset'] = asset
             
-            df_cdf['log_volume'] = pd.to_numeric(df_cdf['log_volume'], errors='coerce')
-            df_cdf['cumulative_percent'] = pd.to_numeric(df_cdf['cumulative_percent'], errors='coerce')
-            df_cdf = df_cdf.dropna(subset=["log_volume", "cumulative_percent"])
-            if not df_cdf.empty:
-                cdf_data.append(df_cdf)
-        else:
-            cursor.execute(cvf_table_query, (asset, asset))
-            cvf_results = cursor.fetchall()
-            df_cvf = pd.DataFrame(cvf_results, columns=["log_volume", "cumulative_percent"])
-            df_cvf = df_cvf[df_cvf['log_volume'] > 0]
-            df_cvf['asset'] = asset
-            cvf_data.append(df_cvf)
+         #   df_cdf['log_volume'] = pd.to_numeric(df_cdf['log_volume'], errors='coerce')
+         #   df_cdf['cumulative_percent'] = pd.to_numeric(df_cdf['cumulative_percent'], errors='coerce')
+         #   df_cdf = df_cdf.dropna(subset=["log_volume", "cumulative_percent"])
+         #   if not df_cdf.empty:
+         #       cdf_data.append(df_cdf)
+        #else:
+        #    cursor.execute(cvf_table_query, (asset, asset))
+        #    cvf_results = cursor.fetchall()
+        #    df_cvf = pd.DataFrame(cvf_results, columns=["log_volume", "cumulative_percent"])
+        #    df_cvf = df_cvf[df_cvf['log_volume'] > 0]
+        #    df_cvf['asset'] = asset
+        #    cvf_data.append(df_cvf)
 
             # Fetch CDF data
-            cursor.execute(cdf_table_query, (asset, asset))
-            cdf_results = cursor.fetchall()
-            df_cdf = pd.DataFrame(cdf_results, columns=["log_volume", "cumulative_percent"])
-            df_cdf = df_cdf[df_cdf['log_volume'] > 0]
-            df_cdf['asset'] = asset
+        #    cursor.execute(cdf_table_query, (asset, asset))
+        #    cdf_results = cursor.fetchall()
+        #    df_cdf = pd.DataFrame(cdf_results, columns=["log_volume", "cumulative_percent"])
+        #    df_cdf = df_cdf[df_cdf['log_volume'] > 0]
+        #    df_cdf['asset'] = asset
             
-            df_cdf['log_volume'] = pd.to_numeric(df_cdf['log_volume'], errors='coerce')
-            df_cdf['cumulative_percent'] = pd.to_numeric(df_cdf['cumulative_percent'], errors='coerce')
-            df_cdf = df_cdf.dropna(subset=["log_volume", "cumulative_percent"])
-            if not df_cdf.empty:
-                cdf_data.append(df_cdf)
+        #    df_cdf['log_volume'] = pd.to_numeric(df_cdf['log_volume'], errors='coerce')
+        #    df_cdf['cumulative_percent'] = pd.to_numeric(df_cdf['cumulative_percent'], errors='coerce')
+        #    df_cdf = df_cdf.dropna(subset=["log_volume", "cumulative_percent"])
+        #    if not df_cdf.empty:
+        #        cdf_data.append(df_cdf)
         
     # Combine data for plotting
     cvf_combined = pd.concat(cvf_data)
