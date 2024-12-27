@@ -227,14 +227,14 @@ LIMIT 5;
 """
 
 cursor.execute(top_assets_query)
-default_assets = [row[0] for row in cursor.fetchall()] + 'Total'
+default_assets = [row[0] for row in cursor.fetchall()] + ['Total']
 
 # Streamlit app
 st.title("Hyperliquid CVF and CDF Visualization")
 
 # User input for asset selection
 cursor.execute("SELECT DISTINCT asset FROM hyperfluid_trades")
-assets = [row[0] for row in cursor.fetchall()] + 'Total'
+assets = [row[0] for row in cursor.fetchall()] + ['Total']
 # Set the default assets as the top 5 most traded assets
 selected_assets = st.multiselect(
     "Select assets to visualize",
